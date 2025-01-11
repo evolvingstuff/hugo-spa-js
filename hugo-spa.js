@@ -57,7 +57,6 @@ class LightSPA {
         this.searchResults = document.getElementById('search-results');
 
         if (!this.mainContent) {
-            console.warn('LightSPA: Main content element not found');
             return;
         }
 
@@ -76,7 +75,6 @@ class LightSPA {
             isInitialState: true,
             index: 0
         };
-        console.log('Saving initial state:', initialState);
         history.replaceState(initialState, document.title, window.location.href);
         this.currentIndex = 0;
     }
@@ -122,11 +120,9 @@ class LightSPA {
     async navigateTo(url, pushState = true) {
         // Prevent duplicate navigation to the same URL
         if (url === window.location.href && !pushState) {
-            console.log('Preventing duplicate navigation to:', url);
             return;
         }
 
-        console.log('Navigating to:', url, 'pushState:', pushState, 'currentIndex:', this.currentIndex);
         try {
             // Show loading state
             this.mainContent.style.opacity = '0.5';
@@ -157,7 +153,6 @@ class LightSPA {
                     scrollPosition: { x: 0, y: 0 }, // Reset scroll for new pages
                     index: ++this.currentIndex
                 };
-                console.log('Pushing new state:', state);
                 history.pushState(state, document.title, url);
                 window.scrollTo(0, 0); // Scroll to top for new pages
             }
@@ -174,7 +169,6 @@ class LightSPA {
             });
             document.dispatchEvent(event);
         } catch (error) {
-            console.error('Navigation failed:', error);
             this.mainContent.style.opacity = '1';
         }
     }
@@ -183,36 +177,29 @@ class LightSPA {
      * Handle browser back/forward navigation
      */
     handlePopState(event) {
-        console.log('PopState event:', event.state);
-        
         // If no state, use current URL
         if (!event.state) {
-            console.log('No state, using current URL:', window.location.href);
             this.navigateTo(window.location.href, false);
             return;
         }
 
         // Update our current index
         this.currentIndex = event.state.index;
-        console.log('Updated index to:', this.currentIndex);
         
         // Update content directly from state if available
         if (event.state.content) {
-            console.log('Restoring content from state:', event.state.url);
             this.mainContent.innerHTML = event.state.content;
             document.title = event.state.title;
             this.mainContent.style.opacity = '1';
 
             // Restore scroll position
             if (event.state.scrollPosition) {
-                console.log('Restoring scroll position:', event.state.scrollPosition);
                 window.scrollTo(event.state.scrollPosition.x, event.state.scrollPosition.y);
             }
             return;
         }
 
         // Otherwise fetch the page
-        console.log('Fetching content for:', event.state.url);
         this.navigateTo(event.state.url, false);
     }
 
