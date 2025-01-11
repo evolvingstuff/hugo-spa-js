@@ -13,11 +13,6 @@ A zero-dependency JavaScript solution that adds SPA-like navigation to Hugo site
 
 ## Installation
 
-### NPM
-```bash
-npm install hugo-spa-js
-```
-
 ### Direct Include
 ```html
 <script src="path/to/hugo-spa.js"></script>
